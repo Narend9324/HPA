@@ -1,37 +1,45 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(() => {
+    // Check for token in localStorage on initial render
+    const token = localStorage.getItem('accessToken');
+    return token ? { token } : null;
+  });
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    console.log("token12", token);
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    // Listen for changes in localStorage (e.g., if logged out from a different tab)
+    const handleStorageChange = () => {
+      const token = localStorage.getItem('accessToken');
+      setCurrentUser(token ? { token } : null);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const login = (token) => {
-    localStorage.setItem('token', token);
-    setIsAuthenticated(true);
-    navigate('/dashboard');
+    localStorage.setItem('accessToken', token);
+    setCurrentUser({ token });
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
-    navigate('/login');
+    localStorage.removeItem('accessToken');
+    setCurrentUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ currentUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

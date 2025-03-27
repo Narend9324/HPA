@@ -6,13 +6,24 @@ import axios from 'axios';
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-
+  
   const onFinish = async (values) => {
     try {
       const response = await axios.post('http://localhost:3000/auth/login', values);
+      console.log('response:', response);
       if (response.status === 200) {
+        const token = response.data.token;
+        const userId = response.data.userInfo.id;
+        console.log('token:', token);
+        
+        // Store the token in localStorage
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('accessToken', token);
+
+        // Update auth context (if using it)
+        login(token);
         message.success('Login successful!');
-        navigate('/'); // Redirect to dashboard after successful login
+        navigate('/dashboard'); // Redirect to dashboard after successful login
       }
     } catch (error) {
       message.error('Login failed. Please check your credentials.');
