@@ -165,3 +165,44 @@ async function checkRunCompletion(threadId, runId) {
     }, 1000);
   });
 }
+
+
+exports.getAllMessages = async (req, res) => {
+  try {
+    let userId = (req.query.userId);
+
+    const decoded = jwt.verify(userId, process.env.JWT_SECRET);
+    userId = decoded.userId;
+    
+    let existingThread = await prisma.userThread.findFirst({
+      where: { userId }, // Find the latest thread for the user
+      orderBy: { createdAt: "desc" }, // Sort by latest
+    });
+    // const threadId = req.query.threadId;
+
+    // if (!existingThread) {
+    //   // Redirect to handleMessage if no existing thread is found
+    //   return exports.handleMessage(req, res);
+    // }
+
+    const threadId = existingThread.threadId;
+
+
+    const messagesResponse = await axios.get(
+      `https://api.openai.com/v1/threads/${threadId}/messages?limit=100`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "OpenAI-Beta": "assistants=v2",
+        },
+      }
+    );
+
+    const messages = messagesResponse.data;
+
+    res.json({ messages });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
