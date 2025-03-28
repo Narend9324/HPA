@@ -33,7 +33,7 @@ function App() {
           <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/dashboard" element={<PrivateRoute> <Dashboard /> </PrivateRoute>} />
           <Route path="/portal" element={<PrivateRoute><Portal /></PrivateRoute>} />
-          <Route path="/nado-ai" element={<PrivateRoute><NadoAi /></PrivateRoute>} />
+          <Route path="/nado" element={<PrivateRoute><NadoAi /></PrivateRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>

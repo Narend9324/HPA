@@ -23,8 +23,8 @@ const Navbar = () => {
           <a href="/portal" className="hover:text-gray-300">
             Portal
           </a>
-          <a href="/nado-ai" className="hover:text-gray-300">
-            Nado AI
+          <a href="/nado" className="hover:text-gray-300">
+            Nado
           </a>
           <a href="/courses" className="hover:text-gray-300">
             Courses
@@ -68,8 +68,8 @@ const Navbar = () => {
           <a href="/portal" className="hover:text-gray-300">
             Portal
           </a>
-          <a href="/nado-ai" className="hover:text-gray-300">
-            Nado AI
+          <a href="/nado" className="hover:text-gray-300">
+            Nado
           </a>
           <a href="/courses" className="hover:text-gray-300">
             Courses
